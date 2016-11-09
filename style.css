@@ -1,0 +1,170 @@
+body {
+    position:absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height:100%;
+    width:100%;
+
+    margin:auto;
+
+    background-color:rgb(150,150,150);
+}
+
+input[type=text] {
+    background-color:rgb(240,240,240);
+    color:rgb(10,10,10);
+}
+
+textarea {
+    background-color:rgb(240,240,240);
+    color:rgb(10,10,10);
+}
+
+#container {
+    position: relative;
+    top:0;
+    margin-top:0px;
+
+    margin-right:25%;
+    margin-left:25%;
+
+    min-width:50%;
+    min-height:100%;
+
+    background-color:rgb(180,180,180);
+    
+    box-shadow:0em 0em 3em 0em rgb(80,80,80);
+
+    text-align:center;
+    color:rgb(80,80,80);
+    font-family: 'Roboto', sans-serif;
+    font-size:1em;
+}
+
+#container #machine-container {
+    position:relative;
+
+    background-color:rgb(200,200,200);
+    min-height:100%;
+}
+
+#container #footer {
+    position:relative;
+    max-height:5%;
+    padding:1em;
+}
+
+#container h1 {
+    margin:auto;
+    padding-top:.5em;
+}
+
+#container label {
+    display:inline-block;
+}
+
+#container input[type=text] {
+    display:inline-block;
+
+    max-width:90%;
+    
+    margin:auto;
+    margin-bottom:1em;
+    margin-left:.4em;
+
+    border:none;
+    padding:.5em;
+
+    border-style:ridge;
+    border-radius:.4em;
+    border-width:.1em;
+}
+
+#container textarea {
+    display:block;
+    margin:auto;
+
+    border:none;
+    padding:.5em;
+
+    max-width:90%;
+
+    border-style:ridge;
+    border-radius:.4em;
+    border-width:.1em;
+    
+    margin-top:1%;
+}
+
+#container button {
+    display:inline-block;
+
+    max-width:90%;
+    
+    padding:2em;
+    padding-top:1em;
+    padding-bottom:1em;
+
+    background-color:rgb(240,240,240);
+    color:rgb(10,10,10);
+
+    border-radius:1em;
+    border-style:solid;
+    border-color:rgb(15,15,15);
+    border-width:.15em;
+
+    margin:auto;
+    margin-top:.5em;
+    margin-bottom:1em;
+    margin-left:.4em;
+
+    transition:background-color .15s;
+}
+
+#container button:hover {
+    background-color:rgb(80,80,80);
+}
+
+#container #define-form {
+    margin:auto;
+    padding-top:3em;
+}
+
+#container #advanced-space {
+    display:block;
+    position:relative;
+    margin:auto;
+
+    min-height:20em;
+    max-width:90%;
+}
+
+#container #share-space {
+    display:block;
+    position:relative;
+
+    padding-bottom:1.5em;
+    padding-top:.5em;
+    
+    opacity:0;
+
+    transition:opacity .5s ease-in-out, height .5s;
+}
+
+#container #help-space {
+    display:block;
+    position:relative;
+
+    margin:auto;
+
+    opacity:0;
+
+    transition:opacity .5s ease-in-out, height .5s;
+}
+
+#container #help-space #help-textarea {
+    resize:none;
+}

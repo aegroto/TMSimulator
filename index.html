@@ -1,0 +1,101 @@
+<head>
+    <title>Turing Machine Simulator</title>
+    <link rel="stylesheet" type="text/css" href="style.css"> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+
+    <script src="utils.js"></script> 
+    <script src="console.js"></script> 
+    <script src="tmachine.js"></script> 
+</head>
+<body>
+    <div id="container">
+        <div id="machine-container">
+            <h1>Turing Machine Simulator</h1>
+            <div id="define-form">
+                    <div class="form-space">
+                        <label>Input:</label>
+                        <input id="input" type="text" name="input" size="35"/><br />
+                    </div>
+                    <div class="form-space">
+                        <label>Definition:</label>
+                        <input id="definition" type="text" name="definition" value="" size="55" /><br />
+                    </div>
+                    <div class="form-space">
+                        <label>Transitions:</label>
+                        <textarea id="transitions" cols="30" rows="15" name="transitions"></textarea><br />
+                    </div>
+                    <div class="form-space">
+                        <label>Console:</label>
+                        <textarea readonly id="console" cols="100" rows="15" name="console"></textarea><br />
+                    </div>
+                    <div class="form-space">
+                        <button type="button" onclick="generateMachine()">Generate TM</button>
+                        <button type="button" onclick="elaborateInputString()">Execute</button>
+                        <button type="button" onclick="stopMachine()">Stop TM</button>
+                        <button type="button" onclick="showHelp()">Help</button><br />
+
+                        <button type="button" onclick="clearConsole()">Clear console</button>
+                        <button type="button" onclick="printCurrentMachineOnConsole()">Debug TM</button>
+                        <button type="button" onclick="showShareLink()">Share TM</button>
+                    </div>
+            </div>               
+            <div id="advanced-space">
+                <div id="share-space">
+                    <textarea id="share-link-textarea" cols="100" rows="10" name="share-link"></textarea>
+                    <button id="copy-button" type="button" onclick="copyShareLink()">Copy to clipboard</button>
+                </div>
+                <div id="help-space">
+                    <textarea id="help-textarea" class="infobox" cols="100" rows="8"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div id="footer">
+            <p>aegroto - 2016</p>
+        </div>
+    </div>    
+
+    <script>
+        clearConsole();
+
+        var share_space=$("#share-space"),
+            help_space=$("#help-space"),
+            advanced_space=$("#advanced-space");
+
+        $("#help-textarea").val("Help:\n"+
+                       "\nGenerate TM: Generate Turing Machine with current settings."+
+                       "\nExecute: Execute currently generated TM with the provided input string."+
+                       "\nHelp: Show this."+
+                       "\nClear console: Empty the console log."+
+                       "\nDebug TM: Print to console settings of the current TM."+
+                       "\nShare TM: Generates and shows a sharing link for the current settings.");
+        showHelp();
+
+        if(isConsoleEmpty()) consolePrint("Welcome!\nDefine your machine,click \"Generate TM\" and then \"Execute\" to let the TM elaborate the input string!");
+        consolePrint("\n#####################################\n");
+
+        $("#input").val("aaab");
+
+        var hash_s=location.hash.substring(1,location.hash.length).replace(/"/g,"").split(";;;");
+        
+        if(hash_s.length>1 && hash_s[0]!=null && hash_s[0]!=undefined) {
+            $("#definition").val(decodeURI(hash_s[0]));
+            consolePrint("Imported definition from URL");
+        } else {
+            $("#definition").val("<{a,b},#,{q0,qF},q0,{qF},d>");
+            consolePrint("No definition from URL or definition corrupted,setting it to default.");
+        }
+
+        if(hash_s.length>1 && hash_s[1]!=null && hash_s[1]!=undefined) {
+            $("#transitions").val(decodeURI(hash_s[1]));
+            consolePrint("Imported transitions from URL");
+        } else {
+            $("#transitions").val("<q0,a,q0,a,d>\n<q0,b,qF,#,d>\n<qF,a,qF,#,d>\n<qF,b,qF,#,d>");
+            consolePrint("No transitions from URL or transitions corrupted,setting them to default.");
+        }
+
+        consolePrint("\n#####################################\n");
+        generateMachine();
+    </script>
+</body>
