@@ -8,6 +8,8 @@ body {
     height:100%;
     width:100%;
 
+    font-size:1em;
+
     margin:auto;
 
     background-color:rgb(150,150,150);
@@ -46,35 +48,43 @@ textarea {
 
 #container #bar-top {
     position:relative;
-    min-height:1.5em;
+    min-height:2em;
 
-    background-color:rgb(100,100,10 0);
-    border-bottom:.2em solid rgb(50,50,50);
+    background-color:rgb(200,200,200);
+    border-bottom:.15em solid rgb(150,150,150);
 }
 
 #container #bar-top button {    
-    display:block;
+    display:inline;
+    float:left;
 
     max-width:50%;
     
     padding:.2em;
-    padding-top:.1em;
-    padding-bottom:.1em;
+    padding-top:.5em;
+    padding-bottom:0;
 
     background-color:rgba(0,0,0,0);
 
     text-align:left;
-    color:rgb(50,50,50);
+    font-weight:bold;
+    font-size:.9em;
+    color:rgb(80,80,80);
 
-    border-radius:none;
+    border-radius:0;
     border:none;
 
-    margin:none;
-    margin-left:.9em;
+    margin:auto;
+    margin-left:.5em;
 
-    text-shadow:.1em .1em .8em black;
+    text-shadow:0 0 rgba(0,0,0,.5);
 
-    transition:background-color .15s;  
+    transition:text-shadow .1s,color .2s,font-size .1s;
+}
+
+#container #bar-top button:hover {
+     text-shadow:0 0 .75em black;
+     color:rgb(245,245,245);
 }
 
 #container #machine-container {
