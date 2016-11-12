@@ -37,7 +37,7 @@
                         <button type="button" onclick="generateMachine()">Generate TM</button>
                         <button type="button" onclick="elaborateInputString()">Execute</button>
                         <button type="button" onclick="stopMachine()">Stop TM</button>
-                        <button type="button" onclick="showHelp()">Help</button><br />
+                        <button type="button" onclick="showOptions()">Options</button><br />
 
                         <button type="button" onclick="clearConsole()">Clear console</button>
                         <button type="button" onclick="printCurrentMachineOnConsole()">Debug TM</button>
@@ -49,8 +49,11 @@
                     <textarea id="share-link-textarea" cols="100" rows="10" name="share-link"></textarea>
                     <button id="copy-button" type="button" onclick="copyShareLink()">Copy to clipboard</button>
                 </div>
-                <div id="help-space">
-                    <textarea id="help-textarea" class="infobox" cols="100" rows="8"></textarea>
+                <div id="options-space">
+                    <label>Time per Step:</label>
+                    <input id="steptime" type="text" name="steptime" value="50" size="10"/><br />
+                    <label>Extended alphabet (leave blank to ignore):</label>
+                    <input id="alphabet-extension" type="text" name="alphabet-extension" value="" size="30">
                 </div>
             </div>
         </div>
@@ -68,17 +71,19 @@
         clearConsole();
 
         var share_space=$("#share-space"),
-            help_space=$("#help-space"),
-            advanced_space=$("#advanced-space");
+            options_space=$("#options-space"),
+            advanced_space=$("#advanced-space"),
+            OPTIONS_STEPTIME,
+            OPTIONS_ALPHABET_EXTENSION;
 
-        $("#help-textarea").val("Help:\n"+
+        /*$("#help-textarea").val("Help:\n"+
                        "\nGenerate TM: Generate Turing Machine with current settings."+
                        "\nExecute: Execute currently generated TM with the provided input string."+
                        "\nHelp: Show this."+
                        "\nClear console: Empty the console log."+
                        "\nDebug TM: Print to console settings of the current TM."+
-                       "\nShare TM: Generates and shows a sharing link for the current settings.");
-        showHelp();
+                       "\nShare TM: Generates and shows a sharing link for the current settings.");*/
+        showOptions();
 
         if(isConsoleEmpty()) consolePrint("Welcome!\nDefine your machine,click \"Generate TM\" and then \"Execute\" to let the TM elaborate the input string!");
         consolePrint("\n#####################################\n");
@@ -102,6 +107,25 @@
             $("#transitions").val("<q0,a,q0,a,d>\n<q0,b,qF,#,d>\n<qF,a,qF,#,d>\n<qF,b,qF,#,d>");
             consolePrint("No transitions from URL or transitions corrupted,setting them to default.");
         }
+
+        if(hash_s.length>1 && hash_s[2]!=null && hash_s[2]!=undefined) {
+            OPTIONS_STEPTIME=decodeURI(hash_s[2]);
+            consolePrint("Imported time per step from URL");
+        } else {
+            OPTIONS_STEPTIME="50";
+            consolePrint("No time per step from URL or transitions corrupted,setting them to default.");
+        }
+
+        if(hash_s.length>1 && hash_s[3]!=null && hash_s[3]!=undefined) {
+            OPTIONS_ALPHABET_EXTENSION=decodeURI(hash_s[3]);
+            consolePrint("Imported alphabet extension from URL");
+        } else {
+            OPTIONS_ALPHABET_EXTENSION="";
+            consolePrint("No alphabet extension from URL or transitions corrupted,setting them to default.");
+        }
+
+        $("#steptime").val(OPTIONS_STEPTIME);
+        $("#alphabet-extension").val(OPTIONS_ALPHABET_EXTENSION);
 
         consolePrint("\n#####################################\n");
         generateMachine();

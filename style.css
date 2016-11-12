@@ -197,7 +197,7 @@ textarea {
     transition:opacity .5s ease-in-out, height .5s;
 }
 
-#container #help-space {
+#container #options-space {
     display:block;
     position:relative;
 

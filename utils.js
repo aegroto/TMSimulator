@@ -12,8 +12,10 @@ function arrayContains(array,obj) {
 
 function showShareLink() {
     if(share_space.css("opacity")==undefined || share_space.css("opacity")==0) {
-        help_space.detach(); 
-        help_space.css({
+        updateOptionsConstants();
+
+        options_space.detach(); 
+        options_space.css({
             "height":"0",
             "opacity":"0"
         });
@@ -27,7 +29,13 @@ function showShareLink() {
         });
         },10);
 
-        $("#share-link-textarea").val(encodeURI(("https://aegroto-tms.surge.sh#"+$("#definition").val()+";;;"+$("#transitions").val()).replace(/"/g,"")));
+        $("#share-link-textarea").val(encodeURI(
+            ("https://aegroto-tms.surge.sh#"+
+            $("#definition").val()+";;;"+
+            $("#transitions").val()+";;;"+
+            OPTIONS_STEPTIME+";;;"+
+            OPTIONS_ALPHABET_EXTENSION+";;;"
+        ).replace(/"/g,"")));
     } else {
         share_space.css({
             "height":"0",
@@ -40,31 +48,38 @@ function showShareLink() {
     }
 }
 
-function showHelp() {
-    if(help_space.css("opacity")==undefined || help_space.css("opacity")==0) {
+function showOptions() {
+    if(options_space.css("opacity")==undefined || options_space.css("opacity")==0) {
         share_space.detach(); 
         share_space.css({
             "height":"0",
             "opacity":"0"
         });
-        help_space.appendTo(advanced_space);
+        options_space.appendTo(advanced_space);
 
         setTimeout(function() {
-        help_space.css({
+        options_space.css({
             "height":"15em",
             "opacity":"1"
         });
         },10);
     } else {
-        help_space.css({
+        options_space.css({
             "height":"0",
             "opacity":"0"
         });
 
         setTimeout(function() {
-            help_space.detach();
+            options_space.detach();
         },500);
+
+        updateOptionsConstants();
     }
+}
+
+function updateOptionsConstants() {
+    OPTIONS_STEPTIME=$("#steptime").val()==undefined ? OPTIONS_STEPTIME : $("#steptime").val();
+    OPTIONS_ALPHABET_EXTENSION=$("#alphabet-extension").val()==undefined ? OPTIONS_ALPHABET_EXTENSION : $("#alphabet-extension").val();
 }
 
 function copyShareLink() {
