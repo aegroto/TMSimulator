@@ -5,12 +5,13 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
 
     <script src="utils.js"></script> 
+    <script src="topbar_utils.js"></script> 
     <script src="console.js"></script> 
     <script src="tmachine.js"></script> 
 </head>
 <body>
-    <div id="docs-space">
-        <div id="help-page">
+    <div id="docs-space"> </div>
+    <div id="help-page" class="docs-page hidden-docs-page">
             <h2>About</h2>
             <p>This Turing Machine simulator was made in November 2016 by aegroto @ <a href="https://itrench.surge.sh">itrench.surge.sh</a>. 
             It's still not finished,but it's constantly updated. If you find any issue, report it.</p>
@@ -43,20 +44,26 @@
             </p>
             <h3>Commands description</h3>
             <p>
-               Generate TM: Generate Turing Machine with current settings.<br>
-               Execute: Execute currently generated TM with the provided input string.<br>
-               Help: Show this.<br>
-               Clear console: Empty the console log.<br>
-               Debug TM: Print to console settings of the current TM.<br>
-               Share TM: Generates and shows a sharing link for the current settings.
+               <b>Generate TM</b>: Generate Turing Machine with current settings <u>(make sure Advanced Options are shown and not the Share Link is)</u>.<br>
+               <b>Execute</b>: Execute currently generated TM with the provided input string.<br>
+               <b>Options</b>: Show advanced options.<br>
+               <b>Clear console</b>: Empty the console log.<br>
+               <b>Debug TM</b>: Print to console settings of the current TM.<br>
+               <b>Share TM</b>: Generates and shows a sharing link for the current settings.
             </p>
-        </div>
+    </div>
+    <div id="examples-page" class="docs-page hidden-docs-page">
+        <p>
+            <a href="https://aegroto-tms.surge.sh#%3C%7Ba,b%7D,#,%7Bq0,qF%7D,q0,%7BqF%7D,d%3E;;;%3Cq0,a,q0,a,r%3E%0A%3Cq0,b,qF,#,r%3E%0A%3CqF,a,qF,#,r%3E%0A%3CqF,b,qF,#,r%3E;;;100;;;;;;">
+                Example 1 - accepts every string of {a,b}* that contains at least one 'b'
+            </a><br />
+        </p> 
     </div>
 
     <div id="container">
         <div id="bar-top">
-            <button type="button" onclick="showExamplesPage()">Examples</button>
-            <button type="button" onclick="showHelpPage()">Help</button>
+            <button type="button" onclick="switchExamplesPage()">Examples</button>
+            <button type="button" onclick="switchHelpPage()">Help</button>
         </div>
         <div id="machine-container">
             <h1>Turing Machine Simulator</h1>
@@ -114,29 +121,33 @@
     <script>
         clearConsole();
 
-        var share_space=$("#share-space"),
+        var body=$("body"),
+            //Share space
+            share_space=$("#share-space"),
             options_space=$("#options-space"),
             advanced_space=$("#advanced-space"),
+
+            //Docs space
             docs_space=$("#docs-space"),
-            help_page=$("help-page"),
+            help_page=$("#help-page"),
+            examples_page=$("#examples-page"),
+            //Options vars
             OPTIONS_STEPTIME,
             OPTIONS_ALPHABET_EXTENSION;
 
-        docs_space.detach();
+        help_page.css("position","absolute");
+        examples_page.css("position","absolute");
 
-        /*$("#help-textarea").val("Help:\n"+
-                       "\nGenerate TM: Generate Turing Machine with current settings."+
-                       "\nExecute: Execute currently generated TM with the provided input string."+
-                       "\nHelp: Show this."+
-                       "\nClear console: Empty the console log."+
-                       "\nDebug TM: Print to console settings of the current TM."+
-                       "\nShare TM: Generates and shows a sharing link for the current settings.");*/
+        docs_space.click(function() {
+            switchDocsSpace();
+        });
+
         showOptions();
 
         if(isConsoleEmpty()) consolePrint("Welcome!\nDefine your machine,click \"Generate TM\" and then \"Execute\" to let the TM elaborate the input string!");
         consolePrint("\n#####################################\n");
 
-        $("#input").val("aaab");
+        $("#input").val("aaabbb");
 
         var hash_s=location.hash.substring(1,location.hash.length).replace(/"/g,"").split(";;;");
         
@@ -152,7 +163,7 @@
             $("#transitions").val(decodeURI(hash_s[1]));
             consolePrint("Imported transitions from URL");
         } else {
-            $("#transitions").val("<q0,a,q0,a,r>\n<q0,b,qF,#,r>\n<qF,a,qF,#,r>\n<qF,b,qF,#,r>");
+            $("#transitions").val("<q0,a,q0,a,r>\n<q0,b,qF,#,r>");
             consolePrint("No transitions from URL or transitions corrupted,setting them to default.");
         }
 

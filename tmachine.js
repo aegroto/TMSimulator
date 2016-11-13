@@ -54,7 +54,7 @@ function generateMachine() {
 
         //Extended Alphabet
         toDefine=$("#alphabet-extension").val();
-        if(toDefine.length>0) {
+        if( toDefine!=undefined && toDefine.length>0) {
             tmachine.alphabet_extension=[];
             if(toDefine.startsWith("{") && toDefine.endsWith("}")) {
                 toDefine=toDefine.substr(1,toDefine.length-2);
@@ -102,7 +102,7 @@ function printCurrentMachineOnConsole() {
 }
 
 function elaborateInputString() {
-    consolePrint("\n--- Elaborating "+$("#input").val()+"...");
+    consolePrint("\n#####################################\n\n--- Elaborating "+$("#input").val()+"...");
     elaborateString(tmachine.initialState,$("#input").val());
 }
 
@@ -132,11 +132,16 @@ function elaborateString(state,string) {
                 var char=string.charAt(i);
                 if(char.length==0) {
                     runMachine=false 
-                } else if(!arrayContains(completeAlphabet,char)) {
+                } else if(!arrayContains(completeAlphabet,char) && char!=tmachine.blank) {
                     runMachine=false;
                     consolePrint("'"+char+"' is not a symbol of the alphabet,stopping machine");          
                 } else {
-                    var def=tmachine.transitions[state][char];
+                    var def;
+                    if(tmachine.transitions[state]!=null || tmachine.transitions[state]!=undefined) {
+                        def=tmachine.transitions[state][char];
+                    } else {
+                        def=null;
+                    }
                     if(def==null || def==undefined) {
                         runMachine=false;
                         consolePrint(state+","+char+" is not a defined transition,stopping machine");
@@ -152,6 +157,12 @@ function elaborateString(state,string) {
                             default: runMachine=false;
                                     consolePrint(def_s[2]+" is not a valid tape move,stopping machine");
                         }
+                        if(i<0) {
+                            string=tmachine.blank.concat(string);
+                            i=0;
+                        } else if(i==string.length) {
+                            string=string.concat(tmachine.blank);
+                        }
                         config=string.substr(0,i).concat(state).concat(string.substr(i,string.length-1));
 
                         consolePrint("Configuration is: "+config);
@@ -160,7 +171,9 @@ function elaborateString(state,string) {
                 if(runMachine) setTimeout(elaborateNextChar,tickTime);
                 else {
                     var isFinalString=arrayContains(tmachine.finalStates,state)?" [FINAL]":" [NOT FINAL]";
-                    consolePrint("Final state:"+state+isFinalString+"\nFinal configuration: "+config);
+                    consolePrint("\n####################\n"+
+                                 "\nFinal state:"+state+isFinalString+"\nFinal configuration: "+config+
+                                 "\n\n####################\n");
                 }
             };
             elaborateNextChar();
