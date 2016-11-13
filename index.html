@@ -9,10 +9,54 @@
     <script src="tmachine.js"></script> 
 </head>
 <body>
+    <div id="docs-space">
+        <div id="help-page">
+            <h2>About</h2>
+            <p>This Turing Machine simulator was made in November 2016 by aegroto @ <a href="https://itrench.surge.sh">itrench.surge.sh</a>. 
+            It's still not finished,but it's constantly updated. If you find any issue, report it.</p>
+            <h2>Known limitations</h2>
+            <p>0)Multi-char symbols are not yet supported. Using more than a letter to define a symbol will probably not work.<br />
+            1)Use R,L,I in transitions to make the tape move Right,Left or to not move. You still can't define your own letters on tape movements. It will be soon implemented.</p>
+            
+            <h2>Commands,definition and additional aptions</h2>
+            <h3>Definition</h3>
+            <p>
+                At first,define your Turing Machine in the "Definition" space with this syntax:<br />
+                <b>&#60&#931,#,Q,q0,F,d&#62</b><br />
+                Where:<br /><br />
+                &#931 = Alphabet<br />
+                # = Blank character<br />
+                Q = States<br />
+                q0 = Initial state<br />
+                F = Final states<br />
+                d = Delta function<br />
+                <br />
+                Wrap every set in graphs {...}<br />
+                Example:<b><{a,b},#,{q0,qF},q0,{qF},d></b>
+            </p>
+            <h3>Transitions</h3>
+            <p>
+                Transitions are defined as quintuples with this syntax:<br />
+                <b> &#60q,c,q1,c1,r/l/i&#62 </b><br />
+                That means:<br /><br />
+                if the machine reads <b>c</b> while its state is <b>q</b>,goes to state <b>q1</b>,writes <b>c1</b> in the current cell and then moves <b>right/left/inherit (not move)</b> <br />
+            </p>
+            <h3>Commands description</h3>
+            <p>
+               Generate TM: Generate Turing Machine with current settings.<br>
+               Execute: Execute currently generated TM with the provided input string.<br>
+               Help: Show this.<br>
+               Clear console: Empty the console log.<br>
+               Debug TM: Print to console settings of the current TM.<br>
+               Share TM: Generates and shows a sharing link for the current settings.
+            </p>
+        </div>
+    </div>
+
     <div id="container">
         <div id="bar-top">
-            <button type="button" onclick="showExamples()">Examples</button>
-            <button type="button" onclick="showHelp()">Help</button>
+            <button type="button" onclick="showExamplesPage()">Examples</button>
+            <button type="button" onclick="showHelpPage()">Help</button>
         </div>
         <div id="machine-container">
             <h1>Turing Machine Simulator</h1>
@@ -73,8 +117,12 @@
         var share_space=$("#share-space"),
             options_space=$("#options-space"),
             advanced_space=$("#advanced-space"),
+            docs_space=$("#docs-space"),
+            help_page=$("help-page"),
             OPTIONS_STEPTIME,
             OPTIONS_ALPHABET_EXTENSION;
+
+        docs_space.detach();
 
         /*$("#help-textarea").val("Help:\n"+
                        "\nGenerate TM: Generate Turing Machine with current settings."+
@@ -104,7 +152,7 @@
             $("#transitions").val(decodeURI(hash_s[1]));
             consolePrint("Imported transitions from URL");
         } else {
-            $("#transitions").val("<q0,a,q0,a,d>\n<q0,b,qF,#,d>\n<qF,a,qF,#,d>\n<qF,b,qF,#,d>");
+            $("#transitions").val("<q0,a,q0,a,r>\n<q0,b,qF,#,r>\n<qF,a,qF,#,r>\n<qF,b,qF,#,r>");
             consolePrint("No transitions from URL or transitions corrupted,setting them to default.");
         }
 
@@ -112,7 +160,7 @@
             OPTIONS_STEPTIME=decodeURI(hash_s[2]);
             consolePrint("Imported time per step from URL");
         } else {
-            OPTIONS_STEPTIME="50";
+            OPTIONS_STEPTIME="100";
             consolePrint("No time per step from URL or transitions corrupted,setting them to default.");
         }
 

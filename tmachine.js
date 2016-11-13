@@ -146,8 +146,8 @@ function elaborateString(state,string) {
                         string=string.replaceAt(i,def_s[1]);
 
                         switch(def_s[2]) {
-                            case "d": i++; break;
-                            case "s": i--; break;
+                            case "r": i++; break;
+                            case "l": i--; break;
                             case "i": break;
                             default: runMachine=false;
                                     consolePrint(def_s[2]+" is not a valid tape move,stopping machine");

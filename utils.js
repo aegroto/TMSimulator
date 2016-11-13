@@ -10,6 +10,14 @@ function arrayContains(array,obj) {
     return false;
 };
 
+function showHelpPage() {
+    if(docs_space.css("opacity")==undefined || docs_space.css("opacity")==0) {
+
+    } else {
+        
+    }
+}
+
 function showShareLink() {
     if(share_space.css("opacity")==undefined || share_space.css("opacity")==0) {
         updateOptionsConstants();
