@@ -108,6 +108,7 @@ function elaborateInputString() {
 
 var runMachine=false;
 function elaborateString(state,string) {
+    if(string.length==0) string=tmachine.blank;
     try {
         runMachine=true;
 

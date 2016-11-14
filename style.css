@@ -60,8 +60,8 @@ a:visited {
     margin-left:auto;
     padding:none;
 
-    width:55%;
-    left:22.5%;
+    width:45%;
+    left:27.5%;
 
     border-radius:.5em;
 
@@ -83,7 +83,7 @@ a:visited {
     padding-left:1em;
 
     opacity:1;
-    height:100%;
+    min-height:100%;
     z-index:2;
 }
 

@@ -19,7 +19,7 @@
             <p>0)Multi-char symbols are not yet supported. Using more than a letter to define a symbol will probably not work.<br />
             1)Use R,L,I in transitions to make the tape move Right,Left or to not move. You still can't define your own letters on tape movements. It will be soon implemented.</p>
             
-            <h2>Commands,definition and additional aptions</h2>
+            <h2>Commands,definition</h2>
             <h3>Definition</h3>
             <p>
                 At first,define your Turing Machine in the "Definition" space with this syntax:<br />
@@ -42,6 +42,7 @@
                 That means:<br /><br />
                 if the machine reads <b>c</b> while its state is <b>q</b>,goes to state <b>q1</b>,writes <b>c1</b> in the current cell and then moves <b>right/left/inherit (not move)</b> <br />
             </p>
+            <h2>Commands and additional options</h2>
             <h3>Commands description</h3>
             <p>
                <b>Generate TM</b>: Generate Turing Machine with current settings <u>(make sure Advanced Options are shown and not the Share Link is)</u>.<br>
@@ -50,6 +51,11 @@
                <b>Clear console</b>: Empty the console log.<br>
                <b>Debug TM</b>: Print to console settings of the current TM.<br>
                <b>Share TM</b>: Generates and shows a sharing link for the current settings.
+            </p>
+            <h3>Additional options</h3>
+            <p>
+               <b>Time per Step (milliseconds)</b>:The time interval between every step the machine takes during the execution (the lesser it is,the faster the machine will complete the execution but the output will be much harder to follow).<br /><br />
+               <b>Extended alphabet</b>: Extends the alphabet with those characters. They will not be accepted in input (define input symbols in definition's alphabet) but the machine will write and read them during the execution.<br />
             </p>
     </div>
     <div id="examples-page" class="docs-page hidden-docs-page">
