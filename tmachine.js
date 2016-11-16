@@ -111,7 +111,6 @@ function elaborateString(state,string) {
     if(string.length==0) string=tmachine.blank;
     try {
         runMachine=true;
-
         if(tmachine.alphabet_extension!=""&&tmachine.alphabet_extension!=undefined) {
             var char;
             for(var i=0;i<string.length;i++) {
@@ -125,9 +124,12 @@ function elaborateString(state,string) {
         }
         if(runMachine) {
             var i=0,
-                config="",
+                config=
+                    string.substr(0,i).concat(state).concat(string.substr(i,string.length)),
                 tickTime=$("#steptime").val(),
                 completeAlphabet=tmachine.alphabet.concat(tmachine.alphabet_extension);
+
+            consolePrint("Configuration is: "+config);
 
             var elaborateNextChar=function() {
                 var char=string.charAt(i);
@@ -164,7 +166,8 @@ function elaborateString(state,string) {
                         } else if(i==string.length) {
                             string=string.concat(tmachine.blank);
                         }
-                        config=string.substr(0,i).concat(state).concat(string.substr(i,string.length-1));
+                        config=removeBlanksOnLimits(
+                            string.substr(0,i).concat(state).concat(string.substr(i,string.length)));
 
                         consolePrint("Configuration is: "+config);
                     }
@@ -188,5 +191,20 @@ function stopMachine() {
     if(runMachine) {
         consolePrint("Machine stopped!");
         runMachine=false;
+    }
+}
+
+function removeBlanksOnLimits(str) {
+    try {
+    if(str.startsWith(tmachine.blank)) {
+        str=str.substr(1,str.length);
+        return removeBlanksOnLimits(str);
+    } else if(str.endsWith(tmachine.blank)) {
+        str=str.substr(0,str.length-1);
+        return removeBlanksOnLimits(str);
+    }
+    return str;
+    } catch(err) {
+        consolePrint("[ERROR] Error removing blanks :"+err);
     }
 }
