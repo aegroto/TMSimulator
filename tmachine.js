@@ -6,14 +6,30 @@ var tmachine={
     initialState:"",
     finalStates:[],
     delta:"",
-    transitions:{}
+    transitions:{},
+    steptime:0
 }
 
-function generateMachine() {
+function generateMachineWithGUIInput() {
+    generateMachine(
+        $("#definition").val(),
+        $("#transitions").val(),
+        $("#steptime").val(),
+        $("#alphabet_extension").val())
+}
+function generateMachine(definition,transitions,steptime,alphabet_extension) {
     consolePrint("\n--- Generating machine...");
 
     try {
-        var toDefine=$("#definition").val();
+        OPTIONS_DEFINITION=definition;
+        if(steptime != undefined) OPTIONS_STEPTIME=steptime;
+        else {
+            OPTIONS_STEPTIME=DEFAULT_OPTIONS_STEPTIME;
+            consolePrint("WARNING:Couldn't retrieve steptime,loading default ("+DEFAULT_OPTIONS_STEPTIME+"). Some browsers require to show the steptime option.");
+            consolePrint("Just click the 'Options' button and generate the machine again");
+        }
+
+        var toDefine=OPTIONS_DEFINITION;
         if(!toDefine.startsWith("<") || !toDefine.endsWith(">")) throw "syntax error in definition";
 
         toDefine=toDefine.substring(1,toDefine.length-1);
@@ -52,8 +68,11 @@ function generateMachine() {
         if(field.length==0) throw "syntax error in definition";
         tmachine.delta=field;
 
+        //Steptime
+        tmachine.steptime=OPTIONS_STEPTIME;
+
         //Extended Alphabet
-        toDefine=$("#alphabet-extension").val();
+        toDefine=alphabet_extension;
         if( toDefine!=undefined && toDefine.length>0) {
             tmachine.alphabet_extension=[];
             if(toDefine.startsWith("{") && toDefine.endsWith("}")) {
@@ -64,7 +83,7 @@ function generateMachine() {
 
         //Transitions
         tmachine.transitions=[];
-        toDefine=$("#transitions").val().replace(/ |\n/g,"");
+        toDefine=transitions.replace(/ |\n/g,"");
         define_s=toDefine.split(">");
         for(var i=0;i<define_s.length;i++) {
             field=define_s[i].substring(1,define_s[i].length);
@@ -101,9 +120,12 @@ function printCurrentMachineOnConsole() {
     }
 }
 
-function elaborateInputString() {
-    consolePrint("\n#####################################\n\n--- Elaborating "+$("#input").val()+"...");
-    elaborateString(tmachine.initialState,$("#input").val());
+function elaborateInputStringOnInitialState() {
+    elaborateString(tmachine.initialState, $("#input").val());
+}
+
+function elaborateStringOnInitialState(str) {
+    elaborateString(tmachine.initialState, str);
 }
 
 var run=false,
@@ -112,10 +134,11 @@ var run=false,
     state,
     string,
     config,
-    tickTime,
     completeAlphabet;
 
 function elaborateString(initialState,str) {
+    consolePrint("\n#####################################\n\n--- Elaborating "+str+"...");
+
     if(str.length==0) string=tmachine.blank;
     else string=str;
     state=initialState;
@@ -137,7 +160,6 @@ function elaborateString(initialState,str) {
             run=true;
             index=0;
             config=string.substr(0,index).concat(state).concat(string.substr(index,string.length));
-            tickTime=$("#steptime").val();
             completeAlphabet=tmachine.alphabet.concat(tmachine.alphabet_extension);
 
             consolePrint("Initial configuration is: "+config);
@@ -217,7 +239,7 @@ var elaborateNextChar=function() {
             consolePrint("Configuration is: "+config);
         }
     }
-    if(run) setTimeout(elaborateNextChar,tickTime);
+    if(run) setTimeout(elaborateNextChar, tmachine.steptime);
     else {
         if(stop) printFinalInformations();
     }

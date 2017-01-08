@@ -10,6 +10,14 @@ function arrayContains(array,obj) {
     return false;
 };
 
+function generateShareLink() {
+    return ("https://aegroto-tms.surge.sh#"+SPLIT_SEQ+
+        $("#definition").val()+SPLIT_SEQ+
+        $("#transitions").val()+SPLIT_SEQ+
+        OPTIONS_STEPTIME+SPLIT_SEQ+
+        OPTIONS_ALPHABET_EXTENSION).replace(/"/g,"");
+}
+
 function showShareLink() {
     if(share_space.css("opacity")==undefined || share_space.css("opacity")==0) {
         updateOptionsConstants();
@@ -29,13 +37,7 @@ function showShareLink() {
         });
         },10);
 
-        $("#share-link-textarea").val(encodeURI(
-            ("https://aegroto-tms.surge.sh#"+
-            $("#definition").val()+";;;"+
-            $("#transitions").val()+";;;"+
-            OPTIONS_STEPTIME+";;;"+
-            OPTIONS_ALPHABET_EXTENSION+";;;"
-        ).replace(/"/g,"")));
+        $("#share-link-textarea").val(encodeURI(generateShareLink()));
     } else {
         share_space.css({
             "height":"0",
@@ -85,4 +87,8 @@ function updateOptionsConstants() {
 function copyShareLink() {
     document.getElementById("share-link-textarea").select();
     document.execCommand("copy");
+}
+
+function parseSpecialsToHTML(text) { //ONLY TESTING PURPOSE,SHOULD NOT BE USED IN PRODUCTION
+    return text.replace(/\n/g,"</br>");
 }

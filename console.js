@@ -1,8 +1,11 @@
 function consolePrint(text) {
-    $("#console").val($("#console").val()+text+"\n");
-
-    var console_ta = $('#console');
-    console_ta.scrollTop(console_ta[0].scrollHeight - console_ta.height());
+    if(OPTIONS_DIRECT_INPUT == undefined) {
+        console_textarea.val(console_textarea.val()+text+"\n");
+        console_textarea.scrollTop(console_textarea[0].scrollHeight - console_textarea.height());
+    } else {
+        //$(":root").append(parseSpecialsToHTML(text+"\n")); //TESTING ONLY
+        $(":root").append(text+"\n");
+    }
 }
 
 function errorPrint(text) {
@@ -10,9 +13,11 @@ function errorPrint(text) {
 }
 
 function clearConsole() {
-    $("#console").val("");
+    console_textarea.val("");
 }
 
 function isConsoleEmpty() {
-    return $("#console").val()=="";
+    if(OPTIONS_DIRECT_INPUT == undefined)
+        return console_textarea.val()=="";
+    return true;
 }
