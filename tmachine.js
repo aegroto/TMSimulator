@@ -106,41 +106,80 @@ function elaborateInputString() {
     elaborateString(tmachine.initialState,$("#input").val());
 }
 
-var run=false,
-    stop=false,
-    index,
-    state,
-    string,
-    config,
-    tickTime,
-    completeAlphabet;
-
-function elaborateString(initialState,str) {
-    if(str.length==0) string=tmachine.blank;
-    else string=str;
-    state=initialState;
-
+var runMachine=false;
+function elaborateString(state,string) {
+    if(string.length==0) string=tmachine.blank;
     try {
-        stop=false;
+        runMachine=true;
         if(tmachine.alphabet_extension!=""&&tmachine.alphabet_extension!=undefined) {
             var char;
             for(var i=0;i<string.length;i++) {
                 char=string.charAt(i);
                 if(!arrayContains(tmachine.alphabet,char) && char!=tmachine.blank) {
-                    stop=true;
+                    runMachine=false;
                     consolePrint(char+" is not a character of the alphabet,input is invalid");
                     break;
                 }
             }
         }
-        if(!stop) {
-            run=true;
-            index=0;
-            config=string.substr(0,index).concat(state).concat(string.substr(index,string.length));
-            tickTime=$("#steptime").val();
-            completeAlphabet=tmachine.alphabet.concat(tmachine.alphabet_extension);
+        if(runMachine) {
+            var i=0,
+                config=
+                    string.substr(0,i).concat(state).concat(string.substr(i,string.length)),
+                tickTime=$("#steptime").val(),
+                completeAlphabet=tmachine.alphabet.concat(tmachine.alphabet_extension);
 
-            consolePrint("Initial configuration is: "+config);
+            consolePrint("Configuration is: "+config);
+
+            var elaborateNextChar=function() {
+                var char=string.charAt(i);
+                if(char.length==0) {
+                    runMachine=false 
+                } else if(!arrayContains(completeAlphabet,char) && char!=tmachine.blank) {
+                    runMachine=false;
+                    consolePrint("'"+char+"' is not a symbol of the alphabet,stopping machine");          
+                } else {
+                    var def;
+                    if(tmachine.transitions[state]!=null || tmachine.transitions[state]!=undefined) {
+                        def=tmachine.transitions[state][char];
+                    } else {
+                        def=null;
+                    }
+                    if(def==null || def==undefined) {
+                        runMachine=false;
+                        consolePrint(state+","+char+" is not a defined transition,stopping machine");
+                    } else {
+                        def_s=def.split(",");
+                        state=def_s[0];
+                        string=string.replaceAt(i,def_s[1]);
+
+                        switch(def_s[2]) {
+                            case "r": i++; break;
+                            case "l": i--; break;
+                            case "i": break;
+                            default: runMachine=false;
+                                    consolePrint(def_s[2]+" is not a valid tape move,stopping machine");
+                        }
+                        if(i<0) {
+                            string=tmachine.blank.concat(string);
+                            i=0;
+                        } else if(i==string.length) {
+                            string=string.concat(tmachine.blank);
+                        }
+                        config=removeBlanksOnLimits(
+                            string.substr(0,i).concat(state).concat(string.substr(i,string.length)));
+
+                        consolePrint("Configuration is: "+config);
+                    }
+                }
+                if(runMachine) setTimeout(elaborateNextChar,tickTime);
+                else {
+                    var isFinalString=arrayContains(tmachine.finalStates,state)?" [FINAL]":" [NOT FINAL]";
+                    consolePrint("\n####################\n"+
+                                 "\nFinal state:"+state+isFinalString+"\nFinal configuration: "+config+
+                                 "\n\n####################\n");
+                }
+            };
             elaborateNextChar();
         }
     } catch(ex) {
@@ -148,86 +187,11 @@ function elaborateString(initialState,str) {
     }
 }
 
-function pauseMachine() {
-    if(!stop) {
-        run=!run;
-        if(run) {
-            consolePrint("Machine resumed");
-            elaborateNextChar();
-        }
-        else consolePrint("Machine paused");
-    }
-}
-
 function stopMachine() {
-    if(!stop) {
+    if(runMachine) {
         consolePrint("Machine stopped!");
-        printFinalInformations();
-        run=false;
-        stop=true;
+        runMachine=false;
     }
-}
-
-function nextStep() {
-    elaborateNextChar();
-    if(!run) run=false;
-}
-
-var elaborateNextChar=function() {
-    var char=string.charAt(index);
-    if(char.length==0) {
-        run=false 
-    } else if(!arrayContains(completeAlphabet,char) && char!=tmachine.blank) {
-        run=false;
-        stop=false;
-        consolePrint("'"+char+"' is not a symbol of the alphabet,stopping machine");          
-    } else {
-        var def;
-        if(tmachine.transitions[state]!=null || tmachine.transitions[state]!=undefined) {
-            def=tmachine.transitions[state][char];
-        } else {
-            def=null;
-        }
-        if(def==null || def==undefined) {
-            run=false;
-            stop=true;
-            consolePrint(state+","+char+" is not a defined transition,stopping machine");
-        } else {
-            def_s=def.split(",");
-            state=def_s[0];
-            string=string.replaceAt(index,def_s[1]);
-
-            switch(def_s[2]) {
-                case "r": index++; break;
-                case "l": index--; break;
-                case "i": break;
-                default: run=false;
-                         stop=true;
-                         consolePrint(def_s[2]+" is not a valid tape move,stopping machine");
-            }
-            if(index<0) {
-                string=tmachine.blank.concat(string);
-                index=0;
-            } else if(index==string.length) {
-                string=string.concat(tmachine.blank);
-            }
-            config=removeBlanksOnLimits(
-                string.substr(0,index).concat(state).concat(string.substr(index,string.length)));
-
-            consolePrint("Configuration is: "+config);
-        }
-    }
-    if(run) setTimeout(elaborateNextChar,tickTime);
-    else {
-        if(stop) printFinalInformations();
-    }
-};
-
-function printFinalInformations() {
-    var isFinalString=arrayContains(tmachine.finalStates,state)?" [FINAL]":" [NOT FINAL]";
-        consolePrint("\n####################\n"+
-                     "\nFinal state:"+state+isFinalString+"\nFinal configuration: "+config+
-                     "\n\n####################\n");
 }
 
 function removeBlanksOnLimits(str) {
