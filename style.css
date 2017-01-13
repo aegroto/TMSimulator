@@ -43,6 +43,42 @@ a:visited {
     color:rgb(105,35,35);
 }
 
+.alert {
+    position: fixed;
+    z-index: 4;
+    opacity: 0;
+
+    min-height:5vh;
+    width:50vw;
+    margin-left:25vw;
+
+    top: 110vh;
+
+    background-color: rgb(240,240,240);
+
+    border: .3vh solid rgb(50,50,50);
+    border-radius: 2vh;
+
+    transition:opacity .3s, top .3s;
+}
+
+.alert p {
+    margin-top: 2.5vh;
+
+    font-size: 2vh;
+    font-weight: bolder;
+
+    text-align: center;
+    color: rgb(50,50,50);
+}
+
+.example-loader {
+    display:inline-block;
+    cursor:pointer;
+    color:rgb(155,35,35);
+    text-decoration:underline;
+}
+
 #docs-space {
     position:fixed;
     width:100%;

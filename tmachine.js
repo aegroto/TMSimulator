@@ -9,6 +9,57 @@ var tmachine={
     transitions:{}
 }
 
+function updateURLAndMachine(url) {
+    window.location.href=url;
+
+    updateMachine(location.hash);
+    return url;
+}
+
+function updateMachine(hash) {
+        var hash_s=hash.substring(1,location.hash.length).replace(/"/g,"").split(";;;");
+        
+        if(hash_s.length>1 && hash_s[0]!=null && hash_s[0]!=undefined) {
+            $("#definition").val(decodeURI(hash_s[0]));
+            consolePrint("Imported definition from URL");
+        } else {
+            $("#definition").val("<{a,b},#,{q0,qF},q0,{qF},d>");
+            consolePrint("No definition from URL or definition corrupted,setting it to default.");
+        }
+
+        if(hash_s.length>1 && hash_s[1]!=null && hash_s[1]!=undefined) {
+            $("#transitions").val(decodeURI(hash_s[1]));
+            consolePrint("Imported transitions from URL");
+        } else {
+            $("#transitions").val("<q0,a,q0,a,r>\n<q0,b,qF,#,r>");
+            consolePrint("No transitions from URL or transitions corrupted,setting them to default.");
+        }
+
+        if(hash_s.length>1 && hash_s[2]!=null && hash_s[2]!=undefined) {
+            OPTIONS_STEPTIME=decodeURI(hash_s[2]);
+            consolePrint("Imported time per step from URL");
+        } else {
+            OPTIONS_STEPTIME="100";
+            consolePrint("No time per step from URL or transitions corrupted,setting them to default.");
+        }
+
+        if(hash_s.length>1 && hash_s[3]!=null && hash_s[3]!=undefined) {
+            OPTIONS_ALPHABET_EXTENSION=decodeURI(hash_s[3]);
+            consolePrint("Imported alphabet extension from URL");
+        } else {
+            OPTIONS_ALPHABET_EXTENSION="";
+            consolePrint("No alphabet extension from URL or transitions corrupted,setting them to default.");
+        }
+
+        $("#steptime").val(OPTIONS_STEPTIME);
+        $("#alphabet-extension").val(OPTIONS_ALPHABET_EXTENSION);
+
+        consolePrint("\n#####################################\n");
+
+        showAlert("Loaded machine!");
+        generateMachine();
+}
+
 function generateMachine() {
     consolePrint("\n--- Generating machine...");
 

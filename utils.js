@@ -4,7 +4,6 @@ String.prototype.replaceAt=function(index, character) {
 
 function arrayContains(array,obj) {
     for(i in array) {
-        //consolePrint(array[i]);
         if(array[i]==obj) return true;
     }
     return false;
@@ -85,4 +84,21 @@ function updateOptionsConstants() {
 function copyShareLink() {
     document.getElementById("share-link-textarea").select();
     document.execCommand("copy");
+}
+
+function showAlert(text) {
+    var alertDiv=$("<div class=\"alert\"> <p>"+text+"</p> </div>");
+    body.append(alertDiv);
+
+    setTimeout(function() { //SHOWING
+        alertDiv.css({"opacity":"1", "top":"80vh"});
+
+        setTimeout(function() { //FADING
+            alertDiv.css({"opacity":"0", "top":"100vh"});
+
+            setTimeout(function() { //DELETE ()
+                alertDiv.remove();
+            }, 700);
+        }, 600);
+    }, 100);
 }
