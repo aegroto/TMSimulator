@@ -1,0 +1,194 @@
+include consts.pug
+include examples.pug
+
+html
+  head
+    title Turing Machine Simulator
+
+    //JQuery
+    script(src=FOLDER_INCLUDE+'/jquery.min.js')
+
+    //Bootstrap
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', crossorigin='anonymous')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css', integrity='sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp', crossorigin='anonymous')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
+
+    //Various
+    link(rel='stylesheet', type='text/css', href=FOLDER_STYLE+'/style.css')
+    link(href='https://fonts.googleapis.com/css?family=Roboto', rel='stylesheet')
+
+    script(src=FOLDER_SCRIPT+'/utils.js')
+    script(src=FOLDER_SCRIPT+'/topbar_utils.js')
+    script(src=FOLDER_SCRIPT+'/console.js')
+    script(src=FOLDER_SCRIPT+'/tmachine.js')
+  body
+    #docs-space
+    #help-page.docs-page.hidden-docs-page
+      h2 About
+      p
+        | This Turing Machine simulator was made in November 2016 by aegroto @ 
+        a(href='https://itrench.surge.sh') itrench.surge.sh
+        | . It&apos;s still not finished,but it&apos;s constantly updated. If you find any issue, report it.
+      h2 Known limitations
+      p
+        | 0)Multi-char symbols are not yet supported. Using more than a letter to define a symbol will probably not work.
+        br
+        |  1)Use R,L,I in transitions to make the tape move Right,Left or to not move. You still can&apos;t define your own letters on tape movements. It will be soon implemented.
+      h2 Commands,definition
+      h3 Definition
+      p
+        | At first,define your Turing Machine in the &quot;Definition&quot; space with this syntax:
+        br
+        |  
+        b &amp;#60&amp;#931,#,Q,q0,F,d&amp;#62
+        br
+        |  Where:
+        br
+        br
+        |  &amp;#931 = Alphabet
+        br
+        |  # = Blank character
+        br
+        |  Q = States
+        br
+        |  q0 = Initial state
+        br
+        |  F = Final states
+        br
+        |  d = Delta function
+        br
+        br
+        |  Wrap every set in graphs {...}
+        br
+        |  Example:
+        b
+      h3 Transitions
+      p
+        | Transitions are defined as quintuples with this syntax:
+        br
+        |  
+        b &amp;#60q,c,q1,c1,r/l/i&amp;#62
+        br
+        |  That means:
+        br
+        br
+        |  if the machine reads 
+        b c
+        |  while its state is 
+        b q
+        | ,goes to state 
+        b q1
+        | ,writes 
+        b c1
+        |  in the current cell and then moves 
+        b right/left/inherit (not move)
+        br
+      h2 Commands and additional options
+      h3 Commands description
+      p
+        b Generate TM
+        | : Generate Turing Machine with current settings 
+        u (make sure Advanced Options are shown and not the Share Link is)
+        | .
+        br
+        |  
+        b Execute
+        | : Execute currently generated TM with the provided input string.
+        br
+        |  
+        b Options
+        | : Show advanced options.
+        br
+        |  
+        b Clear console
+        | : Empty the console log.
+        br
+        |  
+        b Debug TM
+        | : Print to console settings of the current TM.
+        br
+        |  
+        b Share TM
+        | : Generates and shows a sharing link for the current settings.
+      h3 Additional options
+      p
+        b Time per Step (milliseconds)
+        | :The time interval between every step the machine takes during the execution (the lesser it is,the faster the machine will complete the execution but the output will be much harder to follow).
+        br
+        br
+        |  
+        b Extended alphabet
+        | : Extends the alphabet with those characters. They will not be accepted in input (define input symbols in definition&apos;s alphabet) but the machine will write and read them during the execution.
+        br
+    #examples-page.docs-page.hidden-docs-page
+      p
+        each example,index in EXAMPLES
+            a.example-loader(onclick=example.url)= 'Example ' + index + ' - ' + example.desc
+            br
+        //a.example-loader(onclick=EXAMPLES[0].url)= '' + EXAMPLES[0].desc
+    #container
+      #bar-top
+        button(type='button', onclick='switchExamplesPage()') Examples
+        |  
+        button(type='button', onclick='switchHelpPage()') Help
+      #machine-container
+        h1 Turing Machine Simulator
+        #define-form
+          .form-space
+            label Input:
+            |  
+            input#input(type='text', name='input', size='35')
+            br
+          .form-space
+            label Definition:
+            |  
+            input#definition(type='text', name='definition', value='', size='55')
+            br
+          .form-space
+            label Transitions:
+            textarea#transitions(cols='30', rows='15', name='transitions')
+            br
+          .form-space
+            label Console:
+            textarea#console(readonly='', cols='100', rows='15', name='console')
+            br
+          .form-space
+            button(type='button', onclick='generateMachineWithGUIInput()') Generate TM
+            |  
+            button(type='button', onclick='elaborateInputString()') Execute
+            |  
+            button(type='button', onclick='stopMachine()') Stop TM
+            |  
+            button(type='button', onclick='showOptions()') Options
+            br
+            |  
+            button(type='button', onclick='clearConsole()') Clear console
+            |  
+            button(type='button', onclick='printCurrentMachineOnConsole()') Debug TM
+            |  
+            button(type='button', onclick='showShareLink()') Share TM
+        #advanced-space
+          #share-space
+            textarea#share-link-textarea(cols='100', rows='10', name='share-link')
+            |  
+            button#copy-button(type='button', onclick='copyShareLink()') Copy to clipboard
+          #options-space
+            label Time per Step:
+            |  
+            input#steptime(type='text', name='steptime', value='50', size='10')
+            br
+            |  
+            label Extended alphabet (leave blank to ignore):
+            |  
+            input#alphabet-extension(type='text', name='alphabet-extension', value='', size='30')
+            br
+            |  
+            button(type='button', onclick='pauseMachine()') Pause TM
+            |  
+            button(type='button', onclick='nextStep()') Next step
+      #footer
+        p
+          a(href='https://github.com/aegroto/') aegroto
+          |  - 2016 - 
+          a(href='https://github.com/aegroto/TMSimulator') Repository (on GitHub)
+    script(src=FOLDER_SCRIPT+'/init.js')
